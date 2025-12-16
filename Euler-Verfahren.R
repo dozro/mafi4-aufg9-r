@@ -7,6 +7,8 @@ euler_plot <- function(f, x0, y0, h, n) {
   x <- numeric(n + 1)
   y <- numeric(n + 1)
   
+  df <- data.frame(c = numeric(), x = numeric(), y = numeric())
+  
   x[1] <- x0
   y[1] <- y0
   
@@ -14,6 +16,8 @@ euler_plot <- function(f, x0, y0, h, n) {
   for (i in 1:n) {
     y[i + 1] <- y[i] + h * f(x[i], y[i])
     x[i + 1] <- x[i] + h
+    new_row <- data.frame(c = i, x = x[i+1], y = y[i+1])
+    df <- rbind(df, new_row)
   }
   
   plot(
@@ -27,10 +31,11 @@ euler_plot <- function(f, x0, y0, h, n) {
   )
   
   grid()
+  print(df)
 }
 
 
-# Explizites Euler Verfahren
+# Explizites Euler Verfahren; von Rye geschrieben
 eulerStreckenzug <- function(func, x0, y0, h, n){
   x <- x0
   y <- y0
@@ -39,7 +44,7 @@ eulerStreckenzug <- function(func, x0, y0, h, n){
     x_neu <- x +h
     x <- x_neu
     y <- y_neu
-    cat(sprintf("Schritt %d: x=%g, y=%g\n", i, x,y))
+    cat(sprintf("Zwischenergebnis %d: x=%g, y=%g\n", i, x,y))
   }
 }
 
