@@ -6,6 +6,8 @@ runge_kutta <- function(f, x0, y0, h, n) {
   x <- numeric(n + 1)
   y <- numeric(n + 1)
   
+  df <- data.frame(c = numeric(), x = numeric(), y = numeric(), k1 = numeric(), k2 = numeric(), k3 = numeric(), k4 = numeric())
+  
   x[1] <- x0
   y[1] <- y0
   
@@ -17,6 +19,9 @@ runge_kutta <- function(f, x0, y0, h, n) {
     
     y[i+1] = y[i] + (1/6)*(k1 + 2 * k2 + 2 * k3 + k4)
     x[i+1] = x[i] + h
+    
+    new_row <- data.frame(c = i, x = x[i+1], y = y[i+1], k1 = k1, k2 = k2, k3 = k3, k4 = k4)
+    df <- rbind(df, new_row)
   }
   
   # Zeichnen
@@ -29,8 +34,9 @@ runge_kutta <- function(f, x0, y0, h, n) {
     ylab = "y",
     main = "Runge Kutta Verfahren"
   )
-  
   grid()
+  
+  print(df)
 }
 
 # Aus dem Übungsblatt
@@ -52,3 +58,11 @@ f3 <- function(x,y){
 }
 
 runge_kutta(f3, 0, 0, 0.5, 25)
+
+# weitere Aufgaben aus dem Übungsblatt
+
+f4 <- function(x,y){
+  y^2 + 3*x
+}
+runge_kutta(f4, 0, 1, 0.1, 4)
+
