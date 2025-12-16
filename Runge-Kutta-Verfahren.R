@@ -11,6 +11,8 @@ runge_kutta <- function(f, x0, y0, h, n) {
   x[1] <- x0
   y[1] <- y0
   
+  df <- rbind(df, data.frame(c = 0, x = x[1], y = y[1], k1 = 0, k2 = 0, k3 = 0, k4 = 0))
+  
   for(i in 1:n ){
     k1 <- h * f(x[i], y[i])
     k2 <- h * f(x[i] + h/2, y[i] + k1/2)
