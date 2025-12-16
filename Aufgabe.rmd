@@ -1,0 +1,180 @@
+---
+title: "Mafi 4 - Aufgabe 9"
+author: "Rye"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+euler_plot <- function(f, x0, y0, h, n) {
+  # Startwerte
+  x <- numeric(n + 1)
+  y <- numeric(n + 1)
+  
+  df <- data.frame(c = numeric(), x = numeric(), y = numeric())
+  
+  x[1] <- x0
+  y[1] <- y0
+  
+  # Explizites Euler Verfahren
+  for (i in 1:n) {
+    y[i + 1] <- y[i] + h * f(x[i], y[i])
+    x[i + 1] <- x[i] + h
+    new_row <- data.frame(c = i, x = x[i+1], y = y[i+1])
+    df <- rbind(df, new_row)
+  }
+  
+  plot(
+    x, y,
+    type = "o",
+    pch = 16,
+    col = "blue",
+    xlab = "x",
+    ylab = "y",
+    main = "Euler Verfahren"
+  )
+  
+  grid()
+  print(df)
+}
+
+
+# Explizites Euler Verfahren; von Rye geschrieben
+eulerStreckenzug <- function(func, x0, y0, h, n){
+  x <- x0
+  y <- y0
+  for (i in 1:n) {
+    y_neu <- y + h * func(x,y)
+    x_neu <- x +h
+    x <- x_neu
+    y <- y_neu
+    cat(sprintf("Zwischenergebnis %d: x=%g, y=%g\n", i, x,y))
+  }
+}
+
+runge_kutta <- function(f, x0, y0, h, n) {
+  x <- numeric(n + 1)
+  y <- numeric(n + 1)
+  
+  df <- data.frame(c = numeric(), x = numeric(), y = numeric(), k1 = numeric(), k2 = numeric(), k3 = numeric(), k4 = numeric())
+  
+  x[1] <- x0
+  y[1] <- y0
+  
+  df <- rbind(df, data.frame(c = 0, x = x[1], y = y[1], k1 = 0, k2 = 0, k3 = 0, k4 = 0))
+  
+  for(i in 1:n ){
+    k1 <- h * f(x[i], y[i])
+    k2 <- h * f(x[i] + h/2, y[i] + k1/2)
+    k3 <- h * f(x[i] + h/2, y[i] + k2/2)
+    k4 <- h * f(x[i]+h, y[i]+k3)
+    
+    y[i+1] = y[i] + (1/6)*(k1 + 2 * k2 + 2 * k3 + k4)
+    x[i+1] = x[i] + h
+    
+    new_row <- data.frame(c = i, x = x[i+1], y = y[i+1], k1 = k1, k2 = k2, k3 = k3, k4 = k4)
+    df <- rbind(df, new_row)
+  }
+  
+  # Zeichnen
+  plot(
+    x, y,
+    type = "o",
+    pch = 16,
+    col = "blue",
+    xlab = "x",
+    ylab = "y",
+    main = "Runge Kutta Verfahren"
+  )
+  grid()
+  
+  print(df)
+}
+```
+
+# Mafi 4 - Aufgabe 9
+
+```{r cars}
+summary(cars)
+```
+
+## Aufgabe 9.1.a
+
+$$
+y' = y + e^x
+$$ mit $y(0) = 1$ und $h = 0.05$
+
+```{r aufg.9.1.a, echo=true}
+f1 <- function(x,y){
+  y + exp(x)
+}
+eulerStreckenzug(f1, 0, 1, 0.05, 10)
+```
+
+```{r aufg.9.1.a.plot, echo=false}
+f1 <- function(x,y){
+  y + exp(x)
+}
+euler_plot(f1, 0, 1, 0.05, 100)
+```
+
+## Aufgabe 9.1.b
+
+$$
+y' = y + e^x
+$$ mit $y(0) = 1$ und $h = 0.05$
+
+```{r aufg.9.1.b, echo=true}
+f1 <- function(x,y){
+  y + exp(x)
+}
+runge_kutta(f1, 0, 1, 0.05, 10)
+```
+
+## Aufgabe 9.2.b
+
+$$
+y' = x-y; y(1) =2
+$$
+
+### Runge-Kutta
+
+```{r aufg.9.2.b.euler, echo=true}
+f <- function(x,y){
+  x-y
+}
+runge_kutta(f, 1, 2, 0.1, 4)
+```
+
+### Euler Streckenzug
+
+```{r aufg.9.2.b.runge, echo=true}
+f <- function(x,y){
+  x-y
+}
+eulerStreckenzug(f, 1, 2, 0.1, 4)
+euler_plot(f, 1, 2, 0.1, 4)
+```
+
+## Aufgabe 9.3
+
+$$
+y' = y^2 + 3x; y(0) =1
+$$
+
+```{r aufg.9.3.b.euler, echo=true}
+f <- function(x,y){
+  y^2+3*x
+}
+runge_kutta(f, 0, 1, 0.1, 4)
+```
+
+### Euler Streckenzug
+
+```{r aufg.9.2.b.runge, echo=true}
+f <- function(x,y){
+  y^2+3*x
+}
+eulerStreckenzug(f, 0, 1, 0.1, 4)
+euler_plot(f, 0, 1, 0.1, 4)
+```
